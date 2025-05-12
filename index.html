@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A modern Recipe Finder App built with HTML, CSS, and JavaScript">
+    <title>Recipe Finder</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        h1 { text-align: center; }
+        input[type="text"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { width: 100%; padding: 12px; background-color: #4caf50; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        .recipe-list { list-style: none; padding: 0; }
+        .recipe-item { background: #fafafa; padding: 15px; margin-bottom: 10px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recipe Finder</h1>
+        <input type="text" id="searchInput" placeholder="Search for a recipe...">
+        <button onclick="searchRecipes()">Search</button>
+        <ul class="recipe-list" id="recipeList"></ul>
+    </div>
+
+    <script>
+        async function searchRecipes() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+
+            const response = await fetch(`https://api.edamam.com/api/recipes/v2?type=public&q=${query}&app_id=YOUR_APP_ID&app_key=YOUR_APP_KEY`);
+            const data = await response.json();
+            const recipes = data.hits;
+
+            const recipeList = document.getElementById('recipeList');
+            recipeList.innerHTML = '';
+
+            recipes.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'recipe-item';
+                li.innerHTML = `<h3>${item.recipe.label}</h3><p>${item.recipe.source}</p><a href="${item.recipe.url}" target="_blank">View Recipe</a>`;
+                recipeList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
